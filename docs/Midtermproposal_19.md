@@ -46,7 +46,7 @@ Simple, browser-based games can be an enjoyable way to spend time while sitting 
 
 To develop an entertaining browser game that will provide a small (non-addictive) distraction to players. I.e. provide a small dose of joy to ease the mind before a potentially stressful event.  
 
-The game should be interactive and simple. It should also support player personalization and recognition of player achievement.  
+The game should be interactive and simple. It should also support player personalization and recognition of achievement.  
 
 ### 3.2. Objectives
 
