@@ -1,2 +1,10 @@
-# se319-midterm-project
-Midterm project for SE 319 @ Iowa State University, Fall 2024
+# SE 319 Midterm Project Fall 2024  
+
+- Nathanial Boehlje
+- Nathan Willimack  
+- Team #19
+
+## Documents
+
+- [Project proposal](./docs/Midtermproposal_19.md)
+- [Project requirements](./docs/Project_Requirements.md)
