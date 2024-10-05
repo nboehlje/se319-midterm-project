@@ -5,13 +5,13 @@ Midterm Project Proposal
 # SE 3190 Midterm Project Proposal: Team #19  <!-- omit from toc --> 
 
 - Nathanial Boehlje - nboehlje@iastate.edu
-- Nathan Willimack - <netid>@iastate.edu
+- Nathan Willimack - nawilli@iastate.edu
 - 10/5/2024
 
 ## Table of Contents <!-- omit from toc --> 
 - [1. Introduction](#1-introduction)
-  - [1.1. About Student #1](#11-about-student-1)
-  - [1.2. About Student #2](#12-about-student-2)
+  - [1.1. About Nathanial Boehlje](#11-about-nathanial-boehlje)
+  - [1.2. About Nathan Willimack](#12-about-nathan-willimack)
 - [2. Purpose](#2-purpose)
 - [3. Goals and Objectives](#3-goals-and-objectives)
   - [3.1. Goals](#31-goals)
@@ -26,13 +26,15 @@ Midterm Project Proposal
 
 ## 1. Introduction
 
-### 1.1. About Student #1
+### 1.1. About Nathanial Boehlje
 
 Nathanial is a sophomore in Software Engineering. He has professional experience developing web applications using technologies such as JavaScript, HTML, CSS and C# (.NET). 
 
-More recently, his professional focus has shifted entirely to backend infrastructure concerns. This includes the design and development of Web APIs, cloud infrastructure, and IoT messaging systems.   
+More recently, his professional focus has shifted to backend infrastructure. This includes the design and development of Web APIs, cloud infrastructure, and IoT messaging systems.   
 
-### 1.2. About Student #2
+### 1.2. About Nathan Willimack
+
+Nathan is ...
 
 ## 2. Purpose
 
