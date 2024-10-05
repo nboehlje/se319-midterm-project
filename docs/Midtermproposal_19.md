@@ -14,7 +14,7 @@ Midterm Project Proposal
   - [1.2. About Student #2](#12-about-student-2)
 - [2. Purpose](#2-purpose)
 - [3. Goals and Objectives](#3-goals-and-objectives)
-  - [3.1. Our Goal](#31-our-goal)
+  - [3.1. Goals](#31-goals)
   - [3.2. Objectives](#32-objectives)
 - [4. Project](#4-project)
   - [4.1. Description](#41-description)
@@ -42,11 +42,11 @@ Simple, browser-based games can be an enjoyable way to spend time while sitting 
 
 ## 3. Goals and Objectives
 
-### 3.1. Our Goal
+### 3.1. Goals
 
-To develop an entertaining browser game that will provide a small (non-addictive) distraction to players. I.e. provide a small dose of joy to ease the mind before a potentially stressful event.  
+1. To develop an entertaining browser game that will provide a small (non-addictive) distraction to players. I.e. provide a small dose of joy to ease the mind before a potentially stressful event.  
 
-The game should be interactive and simple. It should also support player personalization and recognition of achievement.  
+2. The game should be interactive and simple. It should also support player personalization and recognition of achievement.  
 
 ### 3.2. Objectives
 
