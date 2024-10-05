@@ -1,6 +1,6 @@
-SE 3190: Construction of User Interfaces 
-Fall 2024 
-Midterm Project Proposal 
+SE 3190: Construction of User Interfaces  
+Fall 2024  
+Midterm Project Proposal  
 
 # SE 3190 Midterm Project Proposal: Team #19  <!-- omit from toc --> 
 
