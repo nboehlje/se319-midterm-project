@@ -77,19 +77,22 @@ The game will be a "space invaders" style shooter where the user directs their s
 Home Page:
 This page will provide information about the game and links to the other pages (game surface, profile, leaderboard). It will also have a brief introduction about the game and a "Start Game" button.
 Example:
-+-----------------------------+
-|       2D Pixel Shooter       |
-+-----------------------------+
+```
++--------------------------------------+
+|       2D Pixel Shooter               |
++--------------------------------------+
 | [Start Game] [Profile] [Leaderboard] |
-+-----------------------------+
-|       Welcome to the 2D      |
-|     Pixel Shooter Game!      |
-|    Navigate your spaceship   |
-|   and destroy the asteroids! |
-+-----------------------------+
++--------------------------------------+
+|       Welcome to the 2D              |
+|     Pixel Shooter Game!              |
+|    Navigate your spaceship           |
+|   and destroy the asteroids!         |
++--------------------------------------+
+```
 Game play Page:
 The core gameplay area, where users will control their spaceship, shoot asteroids, and track their score and time. The page will also show player health status at the top.
 Example:
+```
 +------------------------------------+
 | Player Health: 100 | Time: 00:00   |
 +------------------------------------+
@@ -100,31 +103,36 @@ Example:
 |         *Asteroids*                |
 |                                    |
 +------------------------------------+
+```
 Profile Page:
 This page will allow users to create and update their profiles, including uploading a profile picture. There will be fields for the username and a button to save changes.
 Example:
+```
 +-----------------------------+
-|         Profile Page         |
+|         Profile Page        |
 +-----------------------------+
-|  [Profile Picture]           |
-|  [Upload New Picture]        |
+|  [Profile Picture]          |
+|  [Upload New Picture]       |
 |                             |
-|  Username: [______]          |
+|  Username: [______]         |
 |                             |
-|  [Save Changes]              |
+|  [Save Changes]             |
 +-----------------------------+
+```
 Leaderboard Page:
 The leaderboard page will display the top 10 highest scores, showing the player's username and their score.
 Example:
+```
 +-----------------------------+
-|        Leaderboard           |
+|        Leaderboard          |
 +-----------------------------+
-|  1. Username1 - Score1       |
-|  2. Username2 - Score2       |
-|  3. Username3 - Score3       |
-|  ...                         |
-|  10. Username10 - Score10    |
+|  1. Username1 - Score1      |
+|  2. Username2 - Score2      |
+|  3. Username3 - Score3      |
+|  ...                        |
+|  10. Username10 - Score10   |
 +-----------------------------+
+```
 ### 4.3. Images
 ## 5. Resources
 
