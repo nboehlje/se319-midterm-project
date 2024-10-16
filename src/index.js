@@ -40,3 +40,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.code === 'ArrowLeft') moveLeft = false;
         if (e.code === 'ArrowRight') moveRight = false;
     });
+
+    document.addEventListener('keyup', (e) => {
+        if (e.code === 'ArrowLeft') moveLeft = false;
+        if (e.code === 'ArrowRight') moveRight = false;
+    });
+
+    function movePlayer() {
+        const currentLeft = parseInt(player.style.left);
+        if (moveLeft && currentLeft > 0) player.style.left = `${currentLeft - playerSpeed}px`;
+        if (moveRight && currentLeft < gameAreaWidth - 50) player.style.left = `${currentLeft + playerSpeed}px`;
+    }
