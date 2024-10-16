@@ -19,8 +19,19 @@ Midterm Project Proposal
 - [4. Project](#4-project)
   - [4.1. Description](#41-description)
   - [4.2. Wireframes](#42-wireframes)
+    - [4.2.1. Home Page:](#421-home-page)
+    - [4.2.2. Game play Page:](#422-game-play-page)
+    - [4.2.3. Profile Page:](#423-profile-page)
+    - [4.2.4. Leaderboard Page:](#424-leaderboard-page)
   - [4.3. Images](#43-images)
 - [5. Resources](#5-resources)
+  - [5.1. Time Allocation](#51-time-allocation)
+  - [5.2. Developers](#52-developers)
+  - [5.3. Tools and Software](#53-tools-and-software)
+  - [5.4. Organization and Communication](#54-organization-and-communication)
+    - [5.4.1. Task Management](#541-task-management)
+    - [5.4.2. Collaboration](#542-collaboration)
+  - [5.5. Budget](#55-budget)
 - [6. Future Work](#6-future-work)
 - [7. Final Comments](#7-final-comments)
 
@@ -74,7 +85,8 @@ Simple, browser-based games can be an enjoyable way to spend time while sitting 
 The game will be a "space invaders" style shooter where the user directs their ship with the right and left arrow keys, clearing the asteroids from the ship's path.
 
 ### 4.2. Wireframes
-Home Page:
+
+#### 4.2.1. Home Page:
 This page will provide information about the game and links to the other pages (game surface, profile, leaderboard). It will also have a brief introduction about the game and a "Start Game" button.
 Example:
 ```
@@ -89,7 +101,8 @@ Example:
 |   and destroy the asteroids!         |
 +--------------------------------------+
 ```
-Game play Page:
+
+#### 4.2.2. Game play Page:
 The core gameplay area, where users will control their spaceship, shoot asteroids, and track their score and time. The page will also show player health status at the top.
 Example:
 ```
@@ -104,7 +117,8 @@ Example:
 |                                    |
 +------------------------------------+
 ```
-Profile Page:
+
+#### 4.2.3. Profile Page:
 This page will allow users to create and update their profiles, including uploading a profile picture. There will be fields for the username and a button to save changes.
 Example:
 ```
@@ -119,7 +133,8 @@ Example:
 |  [Save Changes]             |
 +-----------------------------+
 ```
-Leaderboard Page:
+
+#### 4.2.4. Leaderboard Page:
 The leaderboard page will display the top 10 highest scores, showing the player's username and their score.
 Example:
 ```
@@ -133,27 +148,46 @@ Example:
 |  10. Username10 - Score10   |
 +-----------------------------+
 ```
+
 ### 4.3. Images
-We have an images folder inside the project. The images so far are named accourdingly to it's purpose. Background is going to be the background, meteor is going to be the meteor, and the spaceship is going to be the player.
+We have an images folder inside the project. The images so far are named accordingly to it's purpose. Background is going to be the background, meteor is going to be the meteor, and the spaceship is going to be the player.
+
 ## 5. Resources
 The development of this project will primarily rely on the following resources and organization:
-Time Allocation:
+
+### 5.1. Time Allocation
+
 Each team member will dedicate approximately 8-10 hours to the project. This time will be distributed across coding, debugging, design work, and testing.
 We will be communicating through text, discord, and microsoft teams. We also meet after our morning class and our noon class. During this time, we will review progress, discuss challenges, and assign new tasks to ensure steady progress.
-Developers:
-The project will be developed by two team members: Nathanial Boehlje and Nathan Willimack. We are dividing the work evening amongst each other. As of right now, Nathaniel will focus on the user interface design and Nathan will focus on game logic and mechanics.
-Tools and Software:
-Software: We will use a combination of open-source and free tools, including:
-Visual Studio Code as the primary IDE for development.
-Phaser.js for game development and React.js for creating the website.
-GitHub for version control and collaboration.
-Figma for wireframing and UI design.
-Organization and Communication:
-Task Management: We will use GitHub to track development tasks and milestones, ensuring all components of the project are on schedule.
-Collaboration: Regular communication will be maintained through Discord like stated before, for quick coordination, along with meetings after class for more in-depth discussions and problem-solving.
-Budget:
+
+### 5.2. Developers
+
+The project will be developed by two team members: Nathanial Boehlje and Nathan Willimack. We are dividing the work evening amongst each other. As of right now, Nathanial will focus on the user interface design and Nathan will focus on game logic and mechanics.
+
+### 5.3. Tools and Software
+
+Software: We will use a combination of open-source and free tools, including: Visual Studio Code as the primary IDE for development. Phaser.js for game development and React.js for creating the website. GitHub for version control and collaboration. Figma for wireframing and UI design.
+
+### 5.4. Organization and Communication
+
+#### 5.4.1. Task Management 
+
+We will use GitHub to track development tasks and milestones, ensuring all components of the project are on schedule.
+
+#### 5.4.2. Collaboration 
+
+Regular communication will be maintained through Discord like stated before, for quick coordination, along with meetings after class for more in-depth discussions and problem-solving.
+
+### 5.5. Budget
+
 No additional funds are required for this project since we are using personal computers and free or open-source tools. The primary investment is time and effort.  
+
 ## 6. Future Work
+
 We’re considering expanding this project into a platform with multiple games that users can choose from. Players would be able to log in, track their progress, and view leaderboards to see how they rank against others. It would also save their game data, so they can pick up where they left off and compare their scores with friends.
+
+Additionally, an interactive 'real-time' multiplayer version of the game could be developed, using WebSockets.
+
 ## 7. Final Comments
+
 We believe this project will be an excellent opportunity to practice both front-end web development and game development. Our goal is to deliver a polished, enjoyable game that meets the requirements for this course while challenging ourselves to explore new technologies and game mechanics.
