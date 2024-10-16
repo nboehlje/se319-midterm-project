@@ -1,0 +1,17 @@
+{
+    "players": [
+      {
+        "name": "Player 1",
+        "health": 100,
+        "position": {"x": 0, "y": 0},
+        "sprite": "images/player1.png"
+      },
+      {
+        "name": "Player 2",
+        "health": 100,
+        "position": {"x": 4, "y": 4},
+        "sprite": "images/player2.png"
+      }
+    ]
+  }
+  
