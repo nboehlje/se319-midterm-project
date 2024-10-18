@@ -1,0 +1,13 @@
+{
+  "gameSettings": {
+      "gameAreaWidth": 1400,
+      "gameAreaHeight": 800,
+      "playerSpeed": 3.7,
+      "bulletSpeed": 5,
+      "enemySpeed": 1,
+      "enemySpawnInterval": 10000,
+      "playerHealth": 100,
+      "playerDamage": 25,
+      "enemyHealth": 3
+  }
+}
