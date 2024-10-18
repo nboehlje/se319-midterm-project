@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let currentPlayerHealth = playerHealth;
             let bonusShots = 0; // Track the number of bonus shots
             let score = 0; // Player score
+            let nextBonusScore = 500; // Next score threshold for bonus drop
 
             if (!gameArea) {
                 console.error("gameArea element not found!");
@@ -186,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (bonusTop > gameAreaHeight) {
                         bonus.remove(); // Remove if it goes off screen
                     } else {
-                        bonus.style.top = `${bonusTop + enemySpeed + 10}px`; // Move the bonus down
+                        bonus.style.top = `${bonusTop + enemySpeed + 15}px`; // Move the bonus down
                     }
 
                     // Check collision with player
@@ -242,8 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
                                 enemy.remove();
                                 score += 100;
                                 updateScore();
-                                if (score % 500 === 0 && !document.querySelector('.bonus')) { // Check score for bonus drop every 500
-                                    spawnBonusDrop(); // Spawn bonus drop if score is a multiple of 500
+
+                                // Spawn bonus drop at specific score intervals
+                                if (score >= nextBonusScore) {
+                                    spawnBonusDrop();
+                                    nextBonusScore += 1000; // Increase the next threshold by 1000 for future bonuses
                                 }
                             } else {
                                 enemy.dataset.health = enemyCurrentHealth;
