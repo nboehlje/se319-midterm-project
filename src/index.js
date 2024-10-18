@@ -66,6 +66,87 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (e.code === 'ArrowRight') moveRight = false;
             });
 
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Escape') {
+                    if (document.getElementById('optionsMenu')) {
+                        hideOptionsMenu();
+                    } else {
+                        togglePause();
+                        showOptionsMenu();
+                    }
+                }
+            });
+            
+            let isPaused = false;
+            let gameLoopRequest;
+            
+            function togglePause() {
+                if (!isPaused) {
+                    isPaused = true;
+                    cancelAnimationFrame(gameLoopRequest);
+                } else {
+                    isPaused = false;
+                    gameLoop();
+                }
+            }
+            
+            function showOptionsMenu() {
+                const optionsMenu = document.createElement('div');
+                optionsMenu.id = 'optionsMenu';
+                optionsMenu.innerHTML = `
+                    <div class="optionsModal">
+                        <p>Options</p>
+                        <button id="quitBtn">Quit</button>
+                        <button id="restartBtn">Restart</button>
+                        <button id="gameInfoBtn">Game Info</button>
+                    </div>
+                `;
+                document.body.appendChild(optionsMenu);
+                document.getElementById('quitBtn').addEventListener('click', handleQuit);
+                document.getElementById('restartBtn').addEventListener('click', handleRestart);
+                document.getElementById('gameInfoBtn').addEventListener('click', showGameInfo);
+            }
+            
+            function handleQuit() {
+                const confirmation = confirm("Are you sure you want to quit?");
+                if (confirmation) {
+                    endGame();
+                } else {
+                    hideOptionsMenu();
+                }
+            }
+            
+            function handleRestart() {
+                const confirmation = confirm("Are you sure you want to restart?");
+                if (confirmation) {
+                    resetGame();
+                } else {
+                    hideOptionsMenu();
+                }
+            }
+            
+            function resetGame() {
+                location.reload();
+            }
+            
+            function showGameInfo() {
+                alert(`
+                Game Info:
+                - Boss battle at 5000 score.
+                - Undestroyed meteors deal 25 health damage.
+                - Collect health drops to restore HP.
+                - Collect bonus drops to gain extra shots.
+                `);
+            }
+            
+            function hideOptionsMenu() {
+                const optionsMenu = document.getElementById('optionsMenu');
+                if (optionsMenu) {
+                    optionsMenu.remove();
+                    togglePause();
+                }
+            }
+            
             function movePlayer() {
                 const currentLeft = parseInt(window.getComputedStyle(player).left);
                 if (moveLeft && currentLeft > 0) player.style.left = `${currentLeft - playerSpeed}px`;
@@ -164,14 +245,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 enemyBullets.forEach(bullet => {
                     const bulletTop = parseInt(window.getComputedStyle(bullet).top);
                     let bulletLeft = parseInt(window.getComputedStyle(bullet).left);
-            
-                    // Apply direction for boss bullets
                     const directionX = parseFloat(bullet.dataset.directionX || 0);
-                    const directionY = parseFloat(bullet.dataset.directionY || 1); // Defaults to straight down
-            
-                    bulletLeft += directionX * 5; // Adjust speed for horizontal movement
-                    const newBulletTop = bulletTop + directionY * 5; // Adjust speed for vertical movement
-            
+                    const directionY = parseFloat(bullet.dataset.directionY || 1);
+                    bulletLeft += directionX * 5;
+                    const newBulletTop = bulletTop + directionY * 5;
                     if (newBulletTop > gameAreaHeight) {
                         bullet.remove();
                     } else if (detectBulletCollision(bullet, player)) {
@@ -183,7 +260,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
             }
-            
 
             function detectBulletCollision(bullet, target) {
                 const bulletRect = bullet.getBoundingClientRect();
@@ -202,17 +278,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     const enemyTop = parseInt(window.getComputedStyle(enemy).top);
                     if (enemy.dataset.type === 'meteor') {
                         if (enemyTop > gameAreaHeight - 50) {
-                            // Meteor reaches player level or bottom of the screen
-                            takeDamage(25);  // Take 25 HP damage
-                            enemy.remove();  // Remove the meteor from the screen
+                            takeDamage(25);
+                            enemy.remove();
                         } else {
-                            // Move the meteor downward
                             enemy.style.top = `${enemyTop + enemySpeed}px`;
                         }
                     }
                 });
             }
-            
 
             function moveBonusDrops() {
                 const bonuses = document.querySelectorAll('.bonus, .healthDrop');
@@ -238,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             function spawnBonusDrop() {
                 const bonus = document.createElement('img');
-                bonus.src = './styles/images/damageDrop.webp'; // Use the damageDrop image
+                bonus.src = './styles/images/damageDrop.webp';
                 bonus.classList.add('bonus');
                 bonus.style.width = '30px';
                 bonus.style.height = '30px';
@@ -250,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             function spawnHealthDrop() {
                 const healthDrop = document.createElement('img');
-                healthDrop.src = './styles/images/healthDrop.webp'; // Use the healthDrop image
+                healthDrop.src = './styles/images/healthDrop.webp';
                 healthDrop.classList.add('healthDrop');
                 healthDrop.style.width = '30px';
                 healthDrop.style.height = '30px';
@@ -261,13 +334,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function takeDamage(amount) {
-                currentPlayerHealth -= amount; // Reduce health by the damage amount
+                currentPlayerHealth -= amount;
                 if (currentPlayerHealth <= 0) {
-                    endGame(); // If health reaches zero, end the game
+                    endGame();
                 } else {
-                    updateHealth(); // Otherwise, just update the health display
+                    updateHealth();
                 }
             }
+
             function updateHealth() {
                 healthElement.innerText = `Health: ${currentPlayerHealth}`;
             }
@@ -345,7 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (score >= nextHealthDropScore) {
                     spawnHealthDrop();
-                    nextHealthDropScore += 750;
+                    nextHealthDropScore += 700;
                 }
 
                 if (score >= nextBonusScore) {
@@ -355,69 +429,56 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function triggerBossBattle() {
-                clearEnemiesAndBullets(); // Clear existing enemies and bullets from the game area
+                clearEnemiesAndBullets();
             
                 const boss = document.createElement('img');
-                boss.src = './styles/images/boss.webp'; // Add a boss image
+                boss.src = './styles/images/boss.webp';
                 boss.id = 'boss';
-                boss.style.width = '300px'; // 6 times the size of a 60px enemy spaceship
+                boss.style.width = '300px';
                 boss.style.height = '300px';
                 boss.style.position = 'absolute';
                 boss.style.top = '0px';
-                boss.style.left = `${(gameAreaWidth - 360) / 2}px`; // Center the boss horizontally
-                boss.dataset.health = 100; // Takes 100 bullets to kill
+                boss.style.left = `${(gameAreaWidth - 360) / 2}px`;
+                boss.dataset.health = 360;
                 gameArea.appendChild(boss);
             
-                moveBoss(boss); // Function to make the boss move back and forth
-                bossShooting(boss); // Function for the boss to shoot
+                moveBoss(boss);
+                bossShooting(boss);
             }
             
             function clearEnemiesAndBullets() {
                 const enemies = document.querySelectorAll('.enemy, .enemySpaceship, .bullet');
-                enemies.forEach(enemy => enemy.remove()); // Remove all enemies and bullets from the screen
+                enemies.forEach(enemy => enemy.remove());
             }
             
             function moveBoss(boss) {
-                let bossDirection = 1; // 1 for moving right, -1 for moving left
-                const bossSpeed = 3; // Adjust speed if necessary
+                let bossDirection = 1;
+                const bossSpeed = 3;
             
                 setInterval(() => {
                     const currentLeft = parseInt(window.getComputedStyle(boss).left);
-            
-                    // Check if the boss hits the right or left edge, then reverse direction
                     if (currentLeft >= gameAreaWidth - boss.offsetWidth) {
-                        bossDirection = -1; // Move left
+                        bossDirection = -1;
                     } else if (currentLeft <= 0) {
-                        bossDirection = 1; // Move right
+                        bossDirection = 1;
                     }
-            
-                    // Update boss position
                     boss.style.left = `${currentLeft + bossSpeed * bossDirection}px`;
-                }, 20); // Adjust interval for smoother/faster movement
+                }, 20);
             }
-            
-            
-            
-            
 
             function bossShooting(boss) {
                 setInterval(() => {
-                    // Straight down shot (angle 90 degrees is directly downward)
                     const bossBulletDown = createBossBullet(boss, 90);
                     gameArea.appendChild(bossBulletDown);
-            
-                    // Diagonal left shots
-                    const bossBulletDiagLeft1 = createBossBullet(boss, 120); // Slight diagonal left
-                    const bossBulletDiagLeft2 = createBossBullet(boss, 135); // More diagonal left
+                    const bossBulletDiagLeft1 = createBossBullet(boss, 120);
+                    const bossBulletDiagLeft2 = createBossBullet(boss, 135);
                     gameArea.appendChild(bossBulletDiagLeft1);
                     gameArea.appendChild(bossBulletDiagLeft2);
-            
-                    // Diagonal right shots
-                    const bossBulletDiagRight1 = createBossBullet(boss, 60);  // Slight diagonal right
-                    const bossBulletDiagRight2 = createBossBullet(boss, 45);  // More diagonal right
+                    const bossBulletDiagRight1 = createBossBullet(boss, 60);
+                    const bossBulletDiagRight2 = createBossBullet(boss, 45);
                     gameArea.appendChild(bossBulletDiagRight1);
                     gameArea.appendChild(bossBulletDiagRight2);
-                }, 1500); // Boss shoots every 1.5 seconds
+                }, 1500);
             }
 
             function createBossBullet(boss, angle) {
@@ -425,12 +486,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 bossBullet.classList.add('enemyBullet');
                 bossBullet.style.left = `${parseInt(window.getComputedStyle(boss).left) + boss.offsetWidth / 2}px`;
                 bossBullet.style.top = `${parseInt(window.getComputedStyle(boss).top) + boss.offsetHeight}px`;
-            
-                // Set the bullet's direction based on the angle (in degrees)
                 const radians = angle * (Math.PI / 180);
-                bossBullet.dataset.directionX = Math.cos(radians); // Horizontal direction
-                bossBullet.dataset.directionY = Math.sin(radians); // Vertical direction (should be downward)
-            
+                bossBullet.dataset.directionX = Math.cos(radians);
+                bossBullet.dataset.directionY = Math.sin(radians);
                 return bossBullet;
             }
 
