@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+    let meteorSpawnInterval;
+    let enemySpaceshipSpawnInterval;
+
     fetch('config.json')
         .then(response => response.json())
         .then(config => {
@@ -16,9 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const gameArea = document.getElementById('gameArea');
             let currentPlayerHealth = playerHealth;
-            let bonusShots = 0; // Track the number of bonus shots
-            let score = 0; // Player score
-            let nextBonusScore = 500; // Next score threshold for bonus drop
+            let bonusShots = 0;
+            let score = 0;
+            let nextBonusScore = 500;
+            let nextHealthDropScore = 700;
+
+            meteorSpawnInterval = 2000;
+            enemySpaceshipSpawnInterval = 10000;
 
             if (!gameArea) {
                 console.error("gameArea element not found!");
@@ -66,18 +73,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function shootBullet() {
-                // Always shoot the regular bullet
                 const bullet = document.createElement('div');
                 bullet.classList.add('bullet');
                 bullet.style.left = `${parseInt(window.getComputedStyle(player).left) + 20}px`;
                 bullet.style.bottom = '60px';
                 gameArea.appendChild(bullet);
 
-                // Shoot additional bullets based on bonusShots
                 for (let i = 0; i < bonusShots; i++) {
                     const bonusBullet = document.createElement('div');
                     bonusBullet.classList.add('bullet');
-                    bonusBullet.style.left = `${parseInt(window.getComputedStyle(player).left) - (i + 1) * 10}px`; // Shoot from left side
+                    bonusBullet.style.left = `${parseInt(window.getComputedStyle(player).left) - (i + 1) * 10}px`;
                     bonusBullet.style.bottom = '60px';
                     gameArea.appendChild(bonusBullet);
                 }
@@ -111,32 +116,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 spaceship.classList.add('enemySpaceship');
                 spaceship.dataset.health = enemyHealth;
                 spaceship.dataset.type = 'spaceship';
+                spaceship.style.position = 'absolute';
                 spaceship.style.top = '0px';
-                let randomLeft;
-                let overlapping;
-                do {
-                    randomLeft = Math.floor(Math.random() * (gameAreaWidth - 50));
-                    overlapping = false;
-                    const spaceships = document.querySelectorAll('.enemySpaceship');
-                    spaceships.forEach(otherSpaceship => {
-                        const otherLeft = parseInt(window.getComputedStyle(otherSpaceship).left);
-                        if (Math.abs(randomLeft - otherLeft) < 50) {
-                            overlapping = true;
-                        }
-                    });
-                } while (overlapping);
-                spaceship.style.left = `${randomLeft}px`;
                 gameArea.appendChild(spaceship);
-                shootAtPlayer(spaceship);
+
+                spaceship.onload = () => {
+                    const spaceshipWidth = spaceship.offsetWidth;
+                    const gameAreaWidth = gameArea.offsetWidth;
+                    let randomLeft = Math.floor(Math.random() * (gameAreaWidth - spaceshipWidth));
+                    spaceship.style.left = `${randomLeft}px`;
+                    shootAtPlayer(spaceship);
+                };
+
+                spaceship.onerror = () => {
+                    console.error("Failed to load spaceship image.");
+                };
             }
 
             function shootAtPlayer(spaceship) {
                 setInterval(() => {
-                    const enemyBullet = document.createElement('div');
-                    enemyBullet.classList.add('enemyBullet');
-                    enemyBullet.style.left = `${parseInt(window.getComputedStyle(spaceship).left) + 20}px`;
-                    enemyBullet.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`;
-                    gameArea.appendChild(enemyBullet);
+                    const enemyBulletMiddle = document.createElement('div');
+                    enemyBulletMiddle.classList.add('enemyBullet');
+                    enemyBulletMiddle.style.left = `${parseInt(window.getComputedStyle(spaceship).left) + 20}px`;
+                    enemyBulletMiddle.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`;
+                    gameArea.appendChild(enemyBulletMiddle);
+
+                    if (score >= 3000) {
+                        const enemyBulletLeft = document.createElement('div');
+                        enemyBulletLeft.classList.add('enemyBullet');
+                        enemyBulletLeft.style.left = `${parseInt(window.getComputedStyle(spaceship).left)}px`;
+                        enemyBulletLeft.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`;
+                        enemyBulletLeft.dataset.direction = 'left';
+                        gameArea.appendChild(enemyBulletLeft);
+
+                        const enemyBulletRight = document.createElement('div');
+                        enemyBulletRight.classList.add('enemyBullet');
+                        enemyBulletRight.style.left = `${parseInt(window.getComputedStyle(spaceship).left) + 40}px`;
+                        enemyBulletRight.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`;
+                        enemyBulletRight.dataset.direction = 'right';
+                        gameArea.appendChild(enemyBulletRight);
+                    }
                 }, 1500);
             }
 
@@ -144,6 +163,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const enemyBullets = document.querySelectorAll('.enemyBullet');
                 enemyBullets.forEach(bullet => {
                     const bulletTop = parseInt(window.getComputedStyle(bullet).top);
+                    let bulletLeft = parseInt(window.getComputedStyle(bullet).left);
+
+                    if (bullet.dataset.direction === 'left') {
+                        bulletLeft -= 2;
+                    } else if (bullet.dataset.direction === 'right') {
+                        bulletLeft += 2;
+                    }
+
                     if (bulletTop > gameAreaHeight) {
                         bullet.remove();
                     } else if (detectBulletCollision(bullet, player)) {
@@ -151,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         takeDamage(playerDamage);
                     } else {
                         bullet.style.top = `${bulletTop + bulletSpeed}px`;
+                        bullet.style.left = `${bulletLeft}px`;
                     }
                 });
             }
@@ -181,19 +209,23 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function moveBonusDrops() {
-                const bonuses = document.querySelectorAll('.bonus');
+                const bonuses = document.querySelectorAll('.bonus, .healthDrop');
                 bonuses.forEach(bonus => {
                     const bonusTop = parseInt(window.getComputedStyle(bonus).top);
                     if (bonusTop > gameAreaHeight) {
-                        bonus.remove(); // Remove if it goes off screen
+                        bonus.remove();
                     } else {
-                        bonus.style.top = `${bonusTop + enemySpeed + 15}px`; // Move the bonus down
+                        bonus.style.top = `${bonusTop + enemySpeed + 15}px`;
                     }
 
-                    // Check collision with player
                     if (detectBulletCollision(bonus, player)) {
-                        bonusShots += 1; // Increase the bonus shots
-                        bonus.remove(); // Remove the bonus after collecting it
+                        if (bonus.classList.contains('bonus')) {
+                            bonusShots += 1;
+                        } else if (bonus.classList.contains('healthDrop')) {
+                            currentPlayerHealth = Math.min(playerHealth, currentPlayerHealth + 25);
+                            updateHealth();
+                        }
+                        bonus.remove();
                     }
                 });
             }
@@ -205,9 +237,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 bonus.style.height = '30px';
                 bonus.style.position = 'absolute';
                 bonus.style.left = `${Math.random() * (gameAreaWidth - 30)}px`;
-                bonus.style.top = '0px'; // Start at the top
-                bonus.style.backgroundColor = 'blue'; // Bonus color
+                bonus.style.top = '0px';
+                bonus.style.backgroundColor = 'blue';
                 gameArea.appendChild(bonus);
+            }
+
+            function spawnHealthDrop() {
+                const healthDrop = document.createElement('div');
+                healthDrop.classList.add('healthDrop');
+                healthDrop.style.width = '30px';
+                healthDrop.style.height = '30px';
+                healthDrop.style.position = 'absolute';
+                healthDrop.style.left = `${Math.random() * (gameAreaWidth - 30)}px`;
+                healthDrop.style.top = '0px';
+                healthDrop.style.backgroundColor = 'green';
+                gameArea.appendChild(healthDrop);
             }
 
             function takeDamage(amount) {
@@ -244,10 +288,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                 score += 100;
                                 updateScore();
 
-                                // Spawn bonus drop at specific score intervals
                                 if (score >= nextBonusScore) {
                                     spawnBonusDrop();
-                                    nextBonusScore += 1000; // Increase the next threshold by 1000 for future bonuses
+                                    nextBonusScore += 1000;
                                 }
                             } else {
                                 enemy.dataset.health = enemyCurrentHealth;
@@ -259,6 +302,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
             function updateScore() {
                 scoreElement.innerText = `Score: ${score}`;
+                if (score % 1000 === 0 && score !== 0) {
+                    meteorSpawnInterval = Math.max(500, meteorSpawnInterval - 200);
+                    enemySpaceshipSpawnInterval = Math.max(5000, enemySpaceshipSpawnInterval - 1000);
+                    clearInterval(meteorSpawnTimer);
+                    clearInterval(enemySpaceshipSpawnTimer);
+                    meteorSpawnTimer = setInterval(createMeteor, meteorSpawnInterval);
+                    enemySpaceshipSpawnTimer = setInterval(createEnemySpaceship, enemySpaceshipSpawnInterval);
+                }
+
+                if (score >= nextHealthDropScore) {
+                    spawnHealthDrop();
+                    nextHealthDropScore += 700;
+                }
+
+                if (score >= nextBonusScore) {
+                    spawnBonusDrop();
+                    nextBonusScore += 1000;
+                }
             }
 
             function endGame() {
@@ -300,9 +361,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 .catch(error => console.error('Error submitting score:', error));
             }
 
-            setInterval(createMeteor, 2000);
-            setInterval(createEnemySpaceship, 10000);
-            setInterval(moveBonusDrops, 100); // Check bonus drops frequently
+            let meteorSpawnTimer = setInterval(createMeteor, meteorSpawnInterval);
+            let enemySpaceshipSpawnTimer = setInterval(createEnemySpaceship, enemySpaceshipSpawnInterval);
+            setInterval(moveBonusDrops, 100);
 
             gameLoop();
 
