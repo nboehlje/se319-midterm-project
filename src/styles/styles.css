@@ -3,12 +3,22 @@ body {
     background-color: black;
     color: white;
     text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 #gameArea {
     border: 2px solid white;
     background-image: url('images/background.jpg');
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 1200px; /* Increased the width */
+    height: 800px; /* Increased the height */
     position: relative;
     overflow: hidden;
 }

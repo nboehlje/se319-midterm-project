@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaga Replica</title>
+    <title>Leaderboard</title>
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
@@ -11,11 +11,14 @@
         <a href="index.html">Home</a>
         <a href="game.html">Play Game</a>
         <a href="profile.html">Profile</a>
-        <a href="leaderboard.html">Leaderboard</a>
     </nav>
-    <div id="gameContainer">
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="leaderboardPage">
+        <h1>Leaderboard</h1>
+        <ul id="leaderboard">
+        </ul>
     </div>
-    <script src="scripts/game.js"></script>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <script src="scripts/leaderboard.js"></script>
+    <script src="scripts/galaga.js"></script>
 </body>
 </html>
