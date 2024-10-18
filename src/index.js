@@ -231,28 +231,30 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function spawnBonusDrop() {
-                const bonus = document.createElement('div');
+                const bonus = document.createElement('img');
+                bonus.src = './styles/images/damageDrop.webp';
                 bonus.classList.add('bonus');
                 bonus.style.width = '30px';
                 bonus.style.height = '30px';
                 bonus.style.position = 'absolute';
                 bonus.style.left = `${Math.random() * (gameAreaWidth - 30)}px`;
                 bonus.style.top = '0px';
-                bonus.style.backgroundColor = 'blue';
                 gameArea.appendChild(bonus);
             }
+            
 
             function spawnHealthDrop() {
-                const healthDrop = document.createElement('div');
+                const healthDrop = document.createElement('img');
+                healthDrop.src = './styles/images/healthDrop.webp';
                 healthDrop.classList.add('healthDrop');
                 healthDrop.style.width = '30px';
                 healthDrop.style.height = '30px';
                 healthDrop.style.position = 'absolute';
                 healthDrop.style.left = `${Math.random() * (gameAreaWidth - 30)}px`;
                 healthDrop.style.top = '0px';
-                healthDrop.style.backgroundColor = 'green';
                 gameArea.appendChild(healthDrop);
             }
+            
 
             function takeDamage(amount) {
                 currentPlayerHealth -= amount;
