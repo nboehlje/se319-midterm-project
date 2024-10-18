@@ -129,6 +129,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 location.reload();
             }
             
+            function restartSpawning() {
+                meteorSpawnTimer = setInterval(createMeteor, meteorSpawnInterval); // Restart meteors
+                enemySpaceshipSpawnTimer = setInterval(createEnemySpaceship, enemySpaceshipSpawnInterval); // Restart spaceships
+            }
+
             function showGameInfo() {
                 alert(`
                 Game Info:
@@ -159,10 +164,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 bullet.style.left = `${parseInt(window.getComputedStyle(player).left) + 20}px`;
                 bullet.style.bottom = '60px';
                 gameArea.appendChild(bullet);
-
+            
                 for (let i = 0; i < bonusShots; i++) {
                     const bonusBullet = document.createElement('div');
                     bonusBullet.classList.add('bullet');
+                    
+                    if (i === 3 || i === 4) { // For 4th and 5th bonus shots, make bullets diagonal
+                        bonusBullet.dataset.directionX = i === 3 ? -1 : 1; // Left for 4th, right for 5th
+                        bonusBullet.dataset.directionY = 1; // Moving upwards
+                    }
+                    
                     bonusBullet.style.left = `${parseInt(window.getComputedStyle(player).left) - (i + 1) * 10}px`;
                     bonusBullet.style.bottom = '60px';
                     gameArea.appendChild(bonusBullet);
@@ -173,10 +184,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 const bullets = document.querySelectorAll('.bullet');
                 bullets.forEach(bullet => {
                     const bulletBottom = parseInt(window.getComputedStyle(bullet).bottom);
-                    if (bulletBottom > gameAreaHeight) {
+                    let bulletLeft = parseInt(window.getComputedStyle(bullet).left);
+                    
+                    const directionX = parseFloat(bullet.dataset.directionX || 0);
+                    const directionY = parseFloat(bullet.dataset.directionY || 1);
+                    
+                    bulletLeft += directionX * 5;
+                    const newBulletBottom = bulletBottom + directionY * bulletSpeed;
+            
+                    if (newBulletBottom > gameAreaHeight) {
                         bullet.remove();
                     } else {
-                        bullet.style.bottom = `${bulletBottom + bulletSpeed}px`;
+                        bullet.style.left = `${bulletLeft}px`;
+                        bullet.style.bottom = `${newBulletBottom}px`;
                     }
                 });
             }
@@ -350,9 +370,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const bullets = document.querySelectorAll('.bullet');
                 const boss = document.getElementById('boss');
                 const enemies = document.querySelectorAll('.enemy, .enemySpaceship');
+                
                 bullets.forEach(bullet => {
                     const bulletRect = bullet.getBoundingClientRect();
-
+            
                     if (boss) {
                         const bossRect = boss.getBoundingClientRect();
                         if (
@@ -367,12 +388,13 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (bossHealth <= 0) {
                                 boss.remove();
                                 alert('You defeated the boss!');
+                                restartSpawning();
                             } else {
                                 boss.dataset.health = bossHealth;
                             }
                         }
                     }
-
+            
                     enemies.forEach(enemy => {
                         const enemyRect = enemy.getBoundingClientRect();
                         if (
@@ -385,10 +407,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             let enemyCurrentHealth = parseInt(enemy.dataset.health) || 1;
                             enemyCurrentHealth -= 1;
                             if (enemyCurrentHealth <= 0) {
-                                enemy.remove();
+                                enemy.remove(); // Ensures enemy is removed properly
                                 score += 100;
                                 updateScore();
-
+            
                                 if (score >= nextBonusScore) {
                                     spawnBonusDrop();
                                     nextBonusScore += 1000;
@@ -430,7 +452,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             function triggerBossBattle() {
                 clearEnemiesAndBullets();
-            
+                
+                clearInterval(meteorSpawnTimer); // Stop meteors
+                clearInterval(enemySpaceshipSpawnTimer); // Stop enemy spaceships
+                
                 const boss = document.createElement('img');
                 boss.src = './styles/images/boss.webp';
                 boss.id = 'boss';
