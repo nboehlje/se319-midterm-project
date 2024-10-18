@@ -13,8 +13,8 @@ body {
 #gameArea {
     background-image: url('images/background.jpg');
     position: relative;
-    width: 1200px;
-    height: 800px;
+    width: 1600px;
+    height: 910px;
     overflow: hidden;
     border: 1px solid black;
     padding: 0;
@@ -108,7 +108,12 @@ body {
 }
 
 .healthDrop {
-    background-color: green;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+.bonus {
     border-radius: 50%;
     width: 30px;
     height: 30px;

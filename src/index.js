@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let bonusShots = 0;
             let score = 0;
             let nextBonusScore = 500;
-            let nextHealthDropScore = 700;
+            let nextHealthDropScore = 750;
 
             meteorSpawnInterval = 2000;
             enemySpaceshipSpawnInterval = 10000;
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     enemyBulletMiddle.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`;
                     gameArea.appendChild(enemyBulletMiddle);
 
-                    if (score >= 3000) {
+                    if (score >= 1000) {
                         const enemyBulletLeft = document.createElement('div');
                         enemyBulletLeft.classList.add('enemyBullet');
                         enemyBulletLeft.style.left = `${parseInt(window.getComputedStyle(spaceship).left)}px`;
@@ -164,24 +164,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 enemyBullets.forEach(bullet => {
                     const bulletTop = parseInt(window.getComputedStyle(bullet).top);
                     let bulletLeft = parseInt(window.getComputedStyle(bullet).left);
-
-                    if (bullet.dataset.direction === 'left') {
-                        bulletLeft -= 2;
-                    } else if (bullet.dataset.direction === 'right') {
-                        bulletLeft += 2;
-                    }
-
-                    if (bulletTop > gameAreaHeight) {
+            
+                    // Apply direction for boss bullets
+                    const directionX = parseFloat(bullet.dataset.directionX || 0);
+                    const directionY = parseFloat(bullet.dataset.directionY || 1); // Defaults to straight down
+            
+                    bulletLeft += directionX * 5; // Adjust speed for horizontal movement
+                    const newBulletTop = bulletTop + directionY * 5; // Adjust speed for vertical movement
+            
+                    if (newBulletTop > gameAreaHeight) {
                         bullet.remove();
                     } else if (detectBulletCollision(bullet, player)) {
                         bullet.remove();
                         takeDamage(playerDamage);
                     } else {
-                        bullet.style.top = `${bulletTop + bulletSpeed}px`;
+                        bullet.style.top = `${newBulletTop}px`;
                         bullet.style.left = `${bulletLeft}px`;
                     }
                 });
             }
+            
 
             function detectBulletCollision(bullet, target) {
                 const bulletRect = bullet.getBoundingClientRect();
@@ -200,13 +202,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     const enemyTop = parseInt(window.getComputedStyle(enemy).top);
                     if (enemy.dataset.type === 'meteor') {
                         if (enemyTop > gameAreaHeight - 50) {
-                            endGame();
+                            // Meteor reaches player level or bottom of the screen
+                            takeDamage(25);  // Take 25 HP damage
+                            enemy.remove();  // Remove the meteor from the screen
                         } else {
+                            // Move the meteor downward
                             enemy.style.top = `${enemyTop + enemySpeed}px`;
                         }
                     }
                 });
             }
+            
 
             function moveBonusDrops() {
                 const bonuses = document.querySelectorAll('.bonus, .healthDrop');
@@ -232,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             function spawnBonusDrop() {
                 const bonus = document.createElement('img');
-                bonus.src = './styles/images/damageDrop.webp';
+                bonus.src = './styles/images/damageDrop.webp'; // Use the damageDrop image
                 bonus.classList.add('bonus');
                 bonus.style.width = '30px';
                 bonus.style.height = '30px';
@@ -241,11 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 bonus.style.top = '0px';
                 gameArea.appendChild(bonus);
             }
-            
 
             function spawnHealthDrop() {
                 const healthDrop = document.createElement('img');
-                healthDrop.src = './styles/images/healthDrop.webp';
+                healthDrop.src = './styles/images/healthDrop.webp'; // Use the healthDrop image
                 healthDrop.classList.add('healthDrop');
                 healthDrop.style.width = '30px';
                 healthDrop.style.height = '30px';
@@ -254,26 +259,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 healthDrop.style.top = '0px';
                 gameArea.appendChild(healthDrop);
             }
-            
 
             function takeDamage(amount) {
-                currentPlayerHealth -= amount;
+                currentPlayerHealth -= amount; // Reduce health by the damage amount
                 if (currentPlayerHealth <= 0) {
-                    endGame();
+                    endGame(); // If health reaches zero, end the game
                 } else {
-                    updateHealth();
+                    updateHealth(); // Otherwise, just update the health display
                 }
             }
-
             function updateHealth() {
                 healthElement.innerText = `Health: ${currentPlayerHealth}`;
             }
-
+            
             function detectCollisions() {
                 const bullets = document.querySelectorAll('.bullet');
+                const boss = document.getElementById('boss');
                 const enemies = document.querySelectorAll('.enemy, .enemySpaceship');
                 bullets.forEach(bullet => {
                     const bulletRect = bullet.getBoundingClientRect();
+
+                    if (boss) {
+                        const bossRect = boss.getBoundingClientRect();
+                        if (
+                            bulletRect.left < bossRect.right &&
+                            bulletRect.right > bossRect.left &&
+                            bulletRect.top < bossRect.bottom &&
+                            bulletRect.bottom > bossRect.top
+                        ) {
+                            bullet.remove();
+                            let bossHealth = parseInt(boss.dataset.health) || 100;
+                            bossHealth -= 1;
+                            if (bossHealth <= 0) {
+                                boss.remove();
+                                alert('You defeated the boss!');
+                            } else {
+                                boss.dataset.health = bossHealth;
+                            }
+                        }
+                    }
+
                     enemies.forEach(enemy => {
                         const enemyRect = enemy.getBoundingClientRect();
                         if (
@@ -304,7 +329,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             function updateScore() {
                 scoreElement.innerText = `Score: ${score}`;
-                if (score % 1000 === 0 && score !== 0) {
+                
+                if (score === 5000) {
+                    triggerBossBattle();
+                }
+
+                if (score % 1000 === 0 && score !== 0 && score < 5000) {
                     meteorSpawnInterval = Math.max(500, meteorSpawnInterval - 200);
                     enemySpaceshipSpawnInterval = Math.max(5000, enemySpaceshipSpawnInterval - 1000);
                     clearInterval(meteorSpawnTimer);
@@ -315,13 +345,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (score >= nextHealthDropScore) {
                     spawnHealthDrop();
-                    nextHealthDropScore += 700;
+                    nextHealthDropScore += 750;
                 }
 
                 if (score >= nextBonusScore) {
                     spawnBonusDrop();
                     nextBonusScore += 1000;
                 }
+            }
+
+            function triggerBossBattle() {
+                clearEnemiesAndBullets(); // Clear existing enemies and bullets from the game area
+            
+                const boss = document.createElement('img');
+                boss.src = './styles/images/boss.webp'; // Add a boss image
+                boss.id = 'boss';
+                boss.style.width = '300px'; // 6 times the size of a 60px enemy spaceship
+                boss.style.height = '300px';
+                boss.style.position = 'absolute';
+                boss.style.top = '0px';
+                boss.style.left = `${(gameAreaWidth - 360) / 2}px`; // Center the boss horizontally
+                boss.dataset.health = 100; // Takes 100 bullets to kill
+                gameArea.appendChild(boss);
+            
+                moveBoss(boss); // Function to make the boss move back and forth
+                bossShooting(boss); // Function for the boss to shoot
+            }
+            
+            function clearEnemiesAndBullets() {
+                const enemies = document.querySelectorAll('.enemy, .enemySpaceship, .bullet');
+                enemies.forEach(enemy => enemy.remove()); // Remove all enemies and bullets from the screen
+            }
+            
+            function moveBoss(boss) {
+                let bossDirection = 1; // 1 for moving right, -1 for moving left
+                const bossSpeed = 3; // Adjust speed if necessary
+            
+                setInterval(() => {
+                    const currentLeft = parseInt(window.getComputedStyle(boss).left);
+            
+                    // Check if the boss hits the right or left edge, then reverse direction
+                    if (currentLeft >= gameAreaWidth - boss.offsetWidth) {
+                        bossDirection = -1; // Move left
+                    } else if (currentLeft <= 0) {
+                        bossDirection = 1; // Move right
+                    }
+            
+                    // Update boss position
+                    boss.style.left = `${currentLeft + bossSpeed * bossDirection}px`;
+                }, 20); // Adjust interval for smoother/faster movement
+            }
+            
+            
+            
+            
+
+            function bossShooting(boss) {
+                setInterval(() => {
+                    // Straight down shot (angle 90 degrees is directly downward)
+                    const bossBulletDown = createBossBullet(boss, 90);
+                    gameArea.appendChild(bossBulletDown);
+            
+                    // Diagonal left shots
+                    const bossBulletDiagLeft1 = createBossBullet(boss, 120); // Slight diagonal left
+                    const bossBulletDiagLeft2 = createBossBullet(boss, 135); // More diagonal left
+                    gameArea.appendChild(bossBulletDiagLeft1);
+                    gameArea.appendChild(bossBulletDiagLeft2);
+            
+                    // Diagonal right shots
+                    const bossBulletDiagRight1 = createBossBullet(boss, 60);  // Slight diagonal right
+                    const bossBulletDiagRight2 = createBossBullet(boss, 45);  // More diagonal right
+                    gameArea.appendChild(bossBulletDiagRight1);
+                    gameArea.appendChild(bossBulletDiagRight2);
+                }, 1500); // Boss shoots every 1.5 seconds
+            }
+
+            function createBossBullet(boss, angle) {
+                const bossBullet = document.createElement('div');
+                bossBullet.classList.add('enemyBullet');
+                bossBullet.style.left = `${parseInt(window.getComputedStyle(boss).left) + boss.offsetWidth / 2}px`;
+                bossBullet.style.top = `${parseInt(window.getComputedStyle(boss).top) + boss.offsetHeight}px`;
+            
+                // Set the bullet's direction based on the angle (in degrees)
+                const radians = angle * (Math.PI / 180);
+                bossBullet.dataset.directionX = Math.cos(radians); // Horizontal direction
+                bossBullet.dataset.directionY = Math.sin(radians); // Vertical direction (should be downward)
+            
+                return bossBullet;
             }
 
             function endGame() {
