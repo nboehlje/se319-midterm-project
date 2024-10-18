@@ -1,7 +1,7 @@
 {
   "gameSettings": {
-      "gameAreaWidth": 1600,
-      "gameAreaHeight": 910,
+      "gameAreaWidth": 1400,
+      "gameAreaHeight": 800,
       "playerSpeed": 3.7,
       "bulletSpeed": 5,
       "enemySpeed": 1,
