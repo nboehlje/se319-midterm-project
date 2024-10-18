@@ -16,13 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const gameArea = document.getElementById('gameArea');
             let currentPlayerHealth = playerHealth;
+            let bonusShots = 0; // Track the number of bonus shots
+            let score = 0; // Player score
 
             if (!gameArea) {
                 console.error("gameArea element not found!");
                 return;
             }
 
-            let score = 0;
             gameArea.style.width = `${gameAreaWidth}px`;
             gameArea.style.height = `${gameAreaHeight}px`;
             gameArea.style.position = 'relative';
@@ -64,11 +65,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function shootBullet() {
+                // Always shoot the regular bullet
                 const bullet = document.createElement('div');
                 bullet.classList.add('bullet');
                 bullet.style.left = `${parseInt(window.getComputedStyle(player).left) + 20}px`;
                 bullet.style.bottom = '60px';
                 gameArea.appendChild(bullet);
+
+                // Shoot additional bullets based on bonusShots
+                for (let i = 0; i < bonusShots; i++) {
+                    const bonusBullet = document.createElement('div');
+                    bonusBullet.classList.add('bullet');
+                    bonusBullet.style.left = `${parseInt(window.getComputedStyle(player).left) - (i + 1) * 10}px`; // Shoot from left side
+                    bonusBullet.style.bottom = '60px';
+                    gameArea.appendChild(bonusBullet);
+                }
             }
 
             function moveBullets() {
@@ -83,27 +94,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            // Create meteors that fall
             function createMeteor() {
                 const meteor = document.createElement('img');
                 meteor.src = './styles/images/meteor.png';
                 meteor.classList.add('enemy');
-                meteor.style.left = `${Math.random() * (gameAreaWidth - 100)}px`; // Random spawn location
-                meteor.style.top = '0px'; // Start at the top
-                meteor.dataset.type = 'meteor'; // Mark it as a meteor
+                meteor.style.left = `${Math.random() * (gameAreaWidth - 100)}px`;
+                meteor.style.top = '0px';
+                meteor.dataset.type = 'meteor';
                 gameArea.appendChild(meteor);
             }
 
-            // Create enemy spaceships that are stationary at the top and shoot at the player
             function createEnemySpaceship() {
                 const spaceship = document.createElement('img');
                 spaceship.src = './styles/images/enemySpaceship.webp';
                 spaceship.classList.add('enemySpaceship');
-                spaceship.dataset.health = enemyHealth; // Assign health to spaceship
-                spaceship.dataset.type = 'spaceship'; // Mark it as a spaceship
-                spaceship.style.top = '0px'; // Stay at the top
-
-                // Ensure spaceships spawn at random positions without overlap
+                spaceship.dataset.health = enemyHealth;
+                spaceship.dataset.type = 'spaceship';
+                spaceship.style.top = '0px';
                 let randomLeft;
                 let overlapping;
                 do {
@@ -117,41 +124,36 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     });
                 } while (overlapping);
-
                 spaceship.style.left = `${randomLeft}px`;
                 gameArea.appendChild(spaceship);
-
-                shootAtPlayer(spaceship); // Spaceship starts shooting
+                shootAtPlayer(spaceship);
             }
 
-            // Spaceships shoot bullets at the player every 1.5 seconds
             function shootAtPlayer(spaceship) {
                 setInterval(() => {
                     const enemyBullet = document.createElement('div');
                     enemyBullet.classList.add('enemyBullet');
                     enemyBullet.style.left = `${parseInt(window.getComputedStyle(spaceship).left) + 20}px`;
-                    enemyBullet.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`; // Adjust starting position of bullet
+                    enemyBullet.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`;
                     gameArea.appendChild(enemyBullet);
-                }, 1500); // Enemy shoots every 1.5 seconds
+                }, 1500);
             }
 
-            // Move enemy bullets
             function moveEnemyBullets() {
                 const enemyBullets = document.querySelectorAll('.enemyBullet');
                 enemyBullets.forEach(bullet => {
                     const bulletTop = parseInt(window.getComputedStyle(bullet).top);
                     if (bulletTop > gameAreaHeight) {
-                        bullet.remove(); // Remove if bullet goes off screen
+                        bullet.remove();
                     } else if (detectBulletCollision(bullet, player)) {
                         bullet.remove();
-                        takeDamage(playerDamage); // Player takes damage
+                        takeDamage(playerDamage);
                     } else {
-                        bullet.style.top = `${bulletTop + bulletSpeed}px`; // Move bullet downward
+                        bullet.style.top = `${bulletTop + bulletSpeed}px`;
                     }
                 });
             }
 
-            // Detect bullet collisions
             function detectBulletCollision(bullet, target) {
                 const bulletRect = bullet.getBoundingClientRect();
                 const targetRect = target.getBoundingClientRect();
@@ -167,16 +169,44 @@ document.addEventListener("DOMContentLoaded", () => {
                 const enemies = document.querySelectorAll('.enemy');
                 enemies.forEach(enemy => {
                     const enemyTop = parseInt(window.getComputedStyle(enemy).top);
-
-                    // Only meteors should fall
                     if (enemy.dataset.type === 'meteor') {
                         if (enemyTop > gameAreaHeight - 50) {
-                            endGame(); // End game if meteor reaches bottom
+                            endGame();
                         } else {
-                            enemy.style.top = `${enemyTop + enemySpeed}px`; // Move meteor down
+                            enemy.style.top = `${enemyTop + enemySpeed}px`;
                         }
                     }
                 });
+            }
+
+            function moveBonusDrops() {
+                const bonuses = document.querySelectorAll('.bonus');
+                bonuses.forEach(bonus => {
+                    const bonusTop = parseInt(window.getComputedStyle(bonus).top);
+                    if (bonusTop > gameAreaHeight) {
+                        bonus.remove(); // Remove if it goes off screen
+                    } else {
+                        bonus.style.top = `${bonusTop + enemySpeed + 10}px`; // Move the bonus down
+                    }
+
+                    // Check collision with player
+                    if (detectBulletCollision(bonus, player)) {
+                        bonusShots += 1; // Increase the bonus shots
+                        bonus.remove(); // Remove the bonus after collecting it
+                    }
+                });
+            }
+
+            function spawnBonusDrop() {
+                const bonus = document.createElement('div');
+                bonus.classList.add('bonus');
+                bonus.style.width = '30px';
+                bonus.style.height = '30px';
+                bonus.style.position = 'absolute';
+                bonus.style.left = `${Math.random() * (gameAreaWidth - 30)}px`;
+                bonus.style.top = '0px'; // Start at the top
+                bonus.style.backgroundColor = 'blue'; // Bonus color
+                gameArea.appendChild(bonus);
             }
 
             function takeDamage(amount) {
@@ -192,11 +222,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 healthElement.innerText = `Health: ${currentPlayerHealth}`;
             }
 
-            // Detect collisions between player's bullets and enemies
             function detectCollisions() {
                 const bullets = document.querySelectorAll('.bullet');
                 const enemies = document.querySelectorAll('.enemy, .enemySpaceship');
-
                 bullets.forEach(bullet => {
                     const bulletRect = bullet.getBoundingClientRect();
                     enemies.forEach(enemy => {
@@ -208,14 +236,17 @@ document.addEventListener("DOMContentLoaded", () => {
                             bulletRect.bottom > enemyRect.top
                         ) {
                             bullet.remove();
-                            let enemyCurrentHealth = parseInt(enemy.dataset.health) || 1; // Meteors don't have health, spaceships do
+                            let enemyCurrentHealth = parseInt(enemy.dataset.health) || 1;
                             enemyCurrentHealth -= 1;
                             if (enemyCurrentHealth <= 0) {
                                 enemy.remove();
                                 score += 100;
                                 updateScore();
+                                if (score % 500 === 0 && !document.querySelector('.bonus')) { // Check score for bonus drop every 500
+                                    spawnBonusDrop(); // Spawn bonus drop if score is a multiple of 500
+                                }
                             } else {
-                                enemy.dataset.health = enemyCurrentHealth; // Update spaceship health
+                                enemy.dataset.health = enemyCurrentHealth;
                             }
                         }
                     });
@@ -226,24 +257,58 @@ document.addEventListener("DOMContentLoaded", () => {
                 scoreElement.innerText = `Score: ${score}`;
             }
 
+            function endGame() {
+                const gameOverDiv = document.createElement('div');
+                gameOverDiv.id = 'gameOverDiv';
+                gameOverDiv.innerHTML = `
+                    <div class="gameOverModal">
+                        <p>Game over! Your score is: ${score}. What would you like to do?</p>
+                        <button id="submitScoreBtn">Submit Score</button>
+                        <button id="goToLeaderboardBtn">No, take me to leaderboard</button>
+                    </div>
+                `;
+                document.body.appendChild(gameOverDiv);
+                document.getElementById('submitScoreBtn').addEventListener('click', () => {
+                    const playerName = prompt("Enter your name to submit your score:");
+                    if (playerName) {
+                        postScoreToLeaderboard(playerName, score);
+                    } else {
+                        alert("You must enter a name to submit your score.");
+                    }
+                });
+                document.getElementById('goToLeaderboardBtn').addEventListener('click', () => {
+                    window.location.href = '/leaderboard.html';
+                });
+            }
+
+            function postScoreToLeaderboard(playerName, score) {
+                const playerData = { playerName, score };
+                fetch('/submit-score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(playerData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Score submitted successfully!');
+                    window.location.href = '/leaderboard.html';
+                })
+                .catch(error => console.error('Error submitting score:', error));
+            }
+
+            setInterval(createMeteor, 2000);
+            setInterval(createEnemySpaceship, 10000);
+            setInterval(moveBonusDrops, 100); // Check bonus drops frequently
+
+            gameLoop();
+
             function gameLoop() {
                 movePlayer();
                 moveBullets();
-                moveEnemies(); // Only meteors move, spaceships stay stationary
+                moveEnemies();
                 moveEnemyBullets();
                 detectCollisions();
                 requestAnimationFrame(gameLoop);
             }
-
-            function endGame() {
-                alert("Game over! Your score is: " + score);
-                location.reload();
-            }
-
-            // Spawn meteors every 2 seconds and spaceships every 10 seconds
-            setInterval(createMeteor, 2000);
-            setInterval(createEnemySpaceship, 10000);
-
-            gameLoop();
         });
 });
