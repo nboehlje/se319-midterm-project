@@ -1,0 +1,64 @@
+{
+    "globalLeaderboard": [
+        {
+            "position": 1,
+            "userName": "nwilliIsAwesome0001", 
+            "img": "./images/nwilliIsAwesome001.png", 
+            "score": 4538
+        }, 
+        {
+            "position": 2, 
+            "userName": "nboehlje255", 
+            "img": "./images/nboehlje255.png", 
+            "score": 4307 
+        }, 
+        {
+            "position": 3, 
+            "userName": "theGreatV0id",
+            "img" : "./images/theGreatV0id.png", 
+            "score": 3509
+        }, 
+        {
+            "position": 4, 
+            "userName": "player001", 
+            "img": "./images/player001.png", 
+            "score": 3456
+        }, 
+        {
+            "position": 5, 
+            "userName": "inTheZone12345", 
+            "img": "./images/inTheZone12345.png", 
+            "score": 3400
+        }, 
+        {
+            "position": 6, 
+            "userName": "feelingLucky999", 
+            "img": "./images/feelingLucky999.png", 
+            "score": 3200
+        }, 
+        {
+            "position": 7, 
+            "userName": "determinantMatrix", 
+            "img": "./images/determinantMatrix.png", 
+            "score": 2100
+        }, 
+        {
+            "position": 8,
+            "userName": "player-093457f",
+            "img": "./images/player-093457f.png",  
+            "score": 2002
+        }, 
+        {
+            "position": 9, 
+            "userName": "player-sdfdsf8", 
+            "img": "./images/player-sdfdsf8.png", 
+            "score": 999 
+        }, 
+        {
+            "position": 10, 
+            "userName": "player-3333", 
+            "img": "./images/player-3333.png", 
+            "score": 543
+        }
+    ]
+}
