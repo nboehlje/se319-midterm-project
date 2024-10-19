@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     enemyBulletMiddle.style.top = `${parseInt(window.getComputedStyle(spaceship).top) + 60}px`;
                     gameArea.appendChild(enemyBulletMiddle);
 
-                    if (score >= 1000) {
+                    if (score >= 3000) {
                         const enemyBulletLeft = document.createElement('div');
                         enemyBulletLeft.classList.add('enemyBullet');
                         enemyBulletLeft.style.left = `${parseInt(window.getComputedStyle(spaceship).left)}px`;
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
             function updateScore() {
                 scoreElement.innerText = `Score: ${score}`;
                 
-                if (score === 5000) {
+                if (score === 10000) {
                     triggerBossBattle();
                 }
 
@@ -464,7 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 boss.style.position = 'absolute';
                 boss.style.top = '0px';
                 boss.style.left = `${(gameAreaWidth - 360) / 2}px`;
-                boss.dataset.health = 360;
+                boss.dataset.health = 1000;
                 gameArea.appendChild(boss);
             
                 moveBoss(boss);
