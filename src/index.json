@@ -1,0 +1,28 @@
+{
+    "gameElements": [
+        {
+            "description": "Your spaceship", 
+            "img": "./images/spaceship.png"
+        }, 
+        {
+            "description": "Enemy spaceship", 
+            "img": "./images/enemySpaceship.png"
+        }, 
+        {
+            "description": "Enemy boss spaceship", 
+            "img": "./images/boss.webp"
+        }, 
+        {
+            "description": "Asteroid", 
+            "img": "./images/meteor.png"
+        }, 
+        {
+            "description": "Health power-up", 
+            "img": "./images/healthDrop.webp"
+        }, 
+        {
+            "description": "Damage power-up", 
+            "img": "./images/damageDrop.webp"
+        }
+    ]
+}
