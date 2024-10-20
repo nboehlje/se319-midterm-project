@@ -541,7 +541,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
                 document.getElementById('goToLeaderboardBtn').addEventListener('click', () => {
-                    window.location.href = '/src/leaderboard.html';
+                    window.location.href = 'leaderboard.html';
                 });
             }
 
@@ -555,7 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(response => response.json())
                 .then(data => {
                     alert('Score submitted successfully!');
-                    window.location.href = '/src/leaderboard.html';
+                    window.location.href = 'leaderboard.html';
                 })
                 .catch(error => console.error('Error submitting score:', error));
             }
