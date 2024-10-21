@@ -4,6 +4,9 @@
 - Nathan Willimack  
 - Team #19
 
+## Project 
+- [Click here to view project](./src/index.html)
+
 ## Documents
 
 - [Project proposal](./docs/Midtermproposal_19.md)
